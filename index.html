@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>テキストをHTMLへ変換</title>
+</head>
+<body>
+<textarea id="tgt" cols="30" rows="10"></textarea>
+
+<script type="module">
+    import convertText2Html from "./convert_text2html.js";
+    document.getElementById('tgt').addEventListener("change", function(e){
+        console.log(convertText2Html(e.target.value));
+    }, false);
+</script>
+</body>
+</html>
