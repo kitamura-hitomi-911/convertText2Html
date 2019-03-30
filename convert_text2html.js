@@ -10,6 +10,7 @@ const custom_tags = [
     },
     {
         custom:['===','==='],
+        negative_character:'=',
         output:'<h2>%value0%</h2>'
     },
     {
