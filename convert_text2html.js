@@ -5,37 +5,57 @@ const split_delim = '|';
 const custom_tags = [
     {
         custom:['※※※','※※※'],
+        negative_character:'※',
         output:'<p class="alert">%value0%</p>',
-        html:['<p class="alert">','</p>']
+    },
+    {
+        custom:['===','==='],
+        output:'<h2>%value0%</h2>'
+    },
+    {
+        custom:['[[>',']]'],
+        output:'<a href="%value0%" target="_blank">%value1%</a>'
     },
     {
         custom:['[[',']]'],
+        negative_character:'[',
         output:'<a href="%value0%">%value1%</a>'
-    },
+    }
 ];
 
 /**
+ * ユーザー入力を正規表現内の文字列リテラルとして扱う
+ * @param {string} string
+ * @returns {string}
+ */
+function escapeRegExp(string) {
+    return string.replace(/[.*+?^=!:${}()|[\]\/\\]/g, '\\$&'); // $&はマッチした部分文字列全体を意味します
+}
+
+/**
  * 改行コードを<br>に変換して返す
- * @param {String|Number} txt
+ * @param {String} txt
  * @returns {String}
  */
 function nl2br(txt = ''){
     return txt.replace(/\r\n/g, '<br>').replace(/(\n|\r)/g, '<br>');
 }
 
+/**
+ * カスタムタグをHTMLタグに変換して返す
+ * @param {String} txt
+ * @returns {string}
+ */
 function custom2html(txt = ''){
     custom_tags.forEach((setting)=>{
-        const regex = new RegExp(setting.custom[0]+'(.*?)'+setting.custom[1], 'i');
-        console.log(txt.match(regex));
+        let regex = new RegExp(escapeRegExp(setting.custom[0])+'(' + (setting.negative_character?'[^'+setting.negative_character+']':'.')+'+?)'+escapeRegExp(setting.custom[1]), '');
         txt = txt.replace(regex,(whole, values) => {
             const value_ary = values.split(split_delim);
-            console.log(setting.output.match(/%value[0-9]%/));
-            setting.output.replace(/%value([0-9])%/,(...replace_tgts) =>{
-                console.log(replace_tgts);
+            return setting.output.replace(/%value([0-9])%/g,(replace_whole, value_num) =>{
+                return value_ary[value_num] || value_ary[0];
             });
-
-            return setting.html[0] + values + setting.html[1];
         });
+        console.log(txt);
     });
     return txt;
 }

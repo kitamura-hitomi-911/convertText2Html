@@ -3,14 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>テキストをHTMLへ変換</title>
+    <style>
+        .alert{
+            background-color:#f00;
+            color:#fff;
+        }
+    </style>
 </head>
 <body>
 <textarea id="tgt" cols="30" rows="10"></textarea>
 
+<div id="output"></div>
+
 <script type="module">
     import convertText2Html from "./convert_text2html.js";
     document.getElementById('tgt').addEventListener("change", function(e){
-        console.log(convertText2Html(e.target.value));
+        document.getElementById('output').innerHTML = convertText2Html(e.target.value);
     }, false);
 </script>
 </body>
